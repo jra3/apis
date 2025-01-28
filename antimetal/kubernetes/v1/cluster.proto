@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package antimetal.kubernetes.v1;
+
+// Cluster contains information about a Kubernetes cluster.
+message Cluster {
+  // name is the name of the Kubernetes cluster.
+  string name = 1;
+  // provider contains information about the Kubernetes cluster provider.
+  oneof provider {
+    EKS eks = 2;
+    GKE gke = 3;
+    AKS aks = 4;
+    Kind kind = 5;
+  }
+}
+
+// EKS contains information about an EKS cluster.
+message EKS {
+  // account_id is the AWS account ID that the EKS cluster is running in.
+  string account_id = 1;
+  // region is the AWS region that the EKS cluster is running in.
+  string region = 2;
+}
+
+// GKE contains information about a GKE cluster.
+message GKE {
+  //TODO: fill out
+}
+
+// AKS contains information about an AKS cluster.
+message AKS {
+  //TODO: fill out
+}
+
+// Kind contains information about a KIND cluster.
+message Kind {}
