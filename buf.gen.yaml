@@ -1,0 +1,13 @@
+version: v1
+managed:
+  enabled: true
+  go_package_prefix:
+    default: github.com/antimetal/apis
+plugins:
+  - plugin: buf.build/protocolbuffers/go:v1.36.4
+    out: ./
+    opt: paths=source_relative
+  - plugin: protoc-gen-golang-deepcopy
+    path: bin/protoc-gen-golang-deepcopy
+    out: ./
+    opt: paths=source_relative
