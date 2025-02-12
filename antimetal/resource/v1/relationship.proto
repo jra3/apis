@@ -23,9 +23,9 @@ message Relationship {
   // The predicate that defines the relationship.
   google.protobuf.Any predicate = 4;
   // Creation time of the relationship.
-  google.protobuf.Timestamp creation_time = 5;
+  google.protobuf.Timestamp created_at = 5;
   // Time when the relationship was last updated.
-  google.protobuf.Timestamp update_time = 6;
+  google.protobuf.Timestamp updated_at = 6;
   // Deletion time of the relationship.
-  google.protobuf.Timestamp deletion_time = 7;
+  google.protobuf.Timestamp deleted_at = 7;
 }

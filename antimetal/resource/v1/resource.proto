@@ -38,11 +38,11 @@ message ResourceMeta {
   // Zone in which the resource is located.
   string zone = 10;
   // Creation time of the resource
-  google.protobuf.Timestamp creation_time = 11;
+  google.protobuf.Timestamp created_at = 11;
   // Time when the resource was last updated
-  google.protobuf.Timestamp update_time = 12;
+  google.protobuf.Timestamp updated_at = 12;
   // Deletion time of the resource
-  google.protobuf.Timestamp deletion_time = 13;
+  google.protobuf.Timestamp deleted_at = 13;
 }
 
 // Tag is a key value pair that helps identify or describe a resource.
