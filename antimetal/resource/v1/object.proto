@@ -5,30 +5,24 @@ package resource.v1;
 import "google/protobuf/any.proto";
 import "google/protobuf/duration.proto";
 
-// Delta is a set of graph objects that is being modified by operation op.
-message Delta {
-  DeltaOperation op = 1;
-  repeated Object objects = 2;
+// TypeDescriptor describes an object type.
+message TypeDescriptor {
+  // The object kind full url (e.g. resource.v1.Resource,
+  // resource.v1.Relationship). Kind represetnts the graph entity type. It
+  // denotes whether the object is a "Resource" (graph node) or a "Relationship"
+  // (graph edge).
+  string kind = 1;
+  // The object type. This should be the full url of the protobuf type
+  // of the object schema.
+  string type = 4;
 }
 
-// DeltaOperation is the type of change that is being made to the object.
-enum DeltaOperation {
-  // Create a new object in the graph.
-  DELTA_OPERATION_CREATE = 0;
-  // Update an existing object in the graph.
-  DELTA_OPERATION_UPDATE = 1;
-  // Delete an object from the graph.
-  DELTA_OPERATION_DELETE = 2;
-  // Heartbeat is a special type of delta that is used to keep an object with a
-  // TTL alive.
-  DELTA_OPERATION_HEARTBEAT = 3;
-}
-
-// Object is a resource or relationship object that is part of the delta set.
+// Object is a resource or relationship object.
 message Object {
-  // The unique object name within the delta set.
-  // For DeltaType_DELTA_TYPE DELETE events, only this field needs to be set.
-  string name = 1;
+  // Describes the object type.
+  TypeDescriptor type = 1;
+  // The Resource or Relationship object
+  google.protobuf.Any object = 2;
   // Time-to-live value for the object. For each object, a timer is started.
   // The timer is reset each time the object is received with a new TTL.
   // If the object is received with no TTL set, the timer is removed for the
@@ -43,15 +37,12 @@ message Object {
   // a systems-agent removal/failure. For example, if the Kubernetes cluster
   // where the systems agent is deployed in is spun down, then all the resources
   // from the cluster will be deleted from the graph once the TTL expires.
-  google.protobuf.Duration ttl = 2;
+  google.protobuf.Duration ttl = 3;
   // The delta version of the Delta change set that the object is a part of.
   // It is used to keep track of the state of individual objects. The version is
   // set and maintained by the client sending Deltas.
   //
   // NOTE: the version string should only be used for comparisions!
   // It is not guaranteed that the version string is monotonically increasing.
-  string delta_version = 3;
-
-  // The Resource or Relationship object
-  google.protobuf.Any object = 4;
+  string delta_version = 4;
 }

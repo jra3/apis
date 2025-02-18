@@ -4,24 +4,17 @@ package resource.v1;
 
 import "google/protobuf/any.proto";
 import "google/protobuf/timestamp.proto";
+import "resource/v1/namespace.proto";
+import "resource/v1/object.proto";
 import "resource/v1/provider.proto";
 
-// ResourceDescriptor describes a resource type.
-message ResourceDescriptor {
-  // The resource type kind.
-  string kind = 1;
-  // The resource type.
-  // This should match the type_url in Resource.spec Any field.
-  string type = 2;
-}
-
-// ResourceMeta is metadata that all concrete cloud resources have.
+// ResourceMeta is metadata that all resources have.
 message ResourceMeta {
   // Resource ID
   bytes id = 1;
   // The provider that serves the resource.
   Provider provider = 2;
-  // Cloud provider resource ID
+  // Provider resource ID
   string provider_id = 3;
   // The provider account that owns the resource
   ProviderAccount account = 4;
@@ -31,8 +24,8 @@ message ResourceMeta {
   string name = 6;
   // List of resource tags
   repeated Tag tags = 7;
-  // Resource group in which resource is contained.
-  string group = 8;
+  // Provider resource group in which resource is contained.
+  string provider_group = 8;
   // Region in which the resource is located.
   string region = 9;
   // Zone in which the resource is located.
@@ -43,6 +36,8 @@ message ResourceMeta {
   google.protobuf.Timestamp updated_at = 12;
   // Deletion time of the resource
   google.protobuf.Timestamp deleted_at = 13;
+  // The namespace scope of the resource.
+  Namespace namespace = 14;
 }
 
 // Tag is a key value pair that helps identify or describe a resource.
@@ -54,8 +49,8 @@ message Tag {
 // Resource is a typed node on the Infrastructure graph and represents an
 // instance of a cloud resource.
 message Resource {
-  // Contains type info for the resource.
-  ResourceDescriptor type = 1;
+  // Describes the resource type.
+  TypeDescriptor type = 1;
   // Contains resource metadata.
   ResourceMeta metadata = 2;
   // The resource spec. The type of this field is determined by the type field.

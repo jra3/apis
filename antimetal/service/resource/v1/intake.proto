@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package service.resource.v1;
 
-import "resource/v1/delta.proto";
+import "resource/v1/object.proto";
 
 // IntakeService is used to create, update, and delete infrastructure graph
 // objects. The Service ingests Resources/Relationships from various sources.
@@ -24,7 +24,26 @@ service IntakeService {
 
 message DeltaRequest {
   string client_id = 1;
-  repeated .resource.v1.Delta deltas = 2;
+  repeated Delta deltas = 2;
 }
 
 message DeltaResponse {}
+
+// Delta is a set of graph objects that is being modified by operation op.
+message Delta {
+  DeltaOperation op = 1;
+  repeated .resource.v1.Object objects = 2;
+}
+
+// DeltaOperation is the type of change that is being made to the object.
+enum DeltaOperation {
+  // Create a new object in the graph.
+  DELTA_OPERATION_CREATE = 0;
+  // Update an existing object in the graph.
+  DELTA_OPERATION_UPDATE = 1;
+  // Delete an object from the graph.
+  DELTA_OPERATION_DELETE = 2;
+  // Heartbeat is a special type of delta that is used to keep an object with a
+  // TTL alive.
+  DELTA_OPERATION_HEARTBEAT = 3;
+}
