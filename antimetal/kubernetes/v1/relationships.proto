@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package kubernetes.v1;
+
+// Source owns the target resource (e.g. ReplicaSet "owns" Pod).
+// Inverse of OwnedBy.
+message Owns {}
+
+// Identifies the owner of a resource.
+// Inverse of Owns.
+message OwnedBy {}
+
+// Represents a volume attachment
+// Inverse of AttachedTo.
+message VolumeMount {}
+
+// Represents the the resource that is mounting the Volume.
+// Inverse of VolumeMount.
+message AttachedTo {}
+
+// Represents a resource that is a member of a group (e.g. Namespace "contains" Deployment).
+// Inverse of ContainedBy.
+message Contains {}
+
+// Inverse of Contains. Represents the group that a resource is a member of.
+message ContainedBy {}
+
+// Used to identify the persistent volume claims bound to a persistent volume.
+// Inverse of ClaimsFrom.
+message BoundBy {}
+
+// Used to identify the persistent volume that a persistent volume claim is bound to.
+// Inverse of BoundBy.
+message ClaimsFrom {}

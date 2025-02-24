@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package network.v1;
+
+// Represents a relationship between two network resources where subject
+// forwards traffic to object.
+// Inverse of RoutedFrom.
+message RoutesTo {}
+
+// Represents a relationship between two network resources where subject receives
+// traffic from object.
+// Inverse of RoutesTo.
+message RoutedFrom {}
