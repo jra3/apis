@@ -5,6 +5,7 @@ package resource.v1;
 import "google/protobuf/any.proto";
 import "google/protobuf/timestamp.proto";
 import "resource/v1/object.proto";
+import "resource/v1/resource.proto";
 
 // Relationship is a directed edge that represents a relationship between two Resources.
 // It is defined like a triplet that contains a predicate, which defines what type of relationship
@@ -20,9 +21,9 @@ message Relationship {
   // Unique identifier for the relationship.
   bytes id = 2;
   // Resource id that is the subject of the predicate.
-  bytes subject = 3;
+  ResourceRef subject = 3;
   // Resource id that is the object of the predicate.
-  bytes object = 4;
+  ResourceRef object = 4;
   // The predicate that defines the relationship.
   // The type is determined by the type field.
   google.protobuf.Any predicate = 5;

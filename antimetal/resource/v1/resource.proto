@@ -56,3 +56,13 @@ message Resource {
   // The resource spec. The type of this field is determined by the type field.
   google.protobuf.Any spec = 3;
 }
+
+// ResourceRef unambiguously identifies a resource.
+message ResourceRef {
+  // Resource type URL.
+  string type_url = 1;
+  // Resource name
+  string name = 2;
+  // The namespace scope of the resource.
+  Namespace namespace = 3;
+}
