@@ -17,7 +17,8 @@ message ResourceMeta {
   // Provider resource ID
   string provider_id = 3;
   // The provider account that owns the resource
-  ProviderAccount account = 4;
+  // Deprecated: use namespace instead.
+  ProviderAccount account = 4 [deprecated = true];
   // Provider service the resource belongs to
   string service = 5;
   // Resource name
