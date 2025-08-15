@@ -1,0 +1,275 @@
+// Antimetal API definitions
+// Copyright Antimetal, Inc. All rights reserved.
+//
+// Use of this source code and APIs are governed by a source available license that can be found in
+// the LICENSE file or at:
+// https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt
+
+syntax = "proto3";
+
+package antimetal.hardware.v1;
+
+import "google/protobuf/timestamp.proto";
+
+// Architecture represents system architectures following uname conventions
+enum Architecture {
+  ARCHITECTURE_UNKNOWN = 0;
+  ARCHITECTURE_X86 = 1;
+  ARCHITECTURE_X86_64 = 2;
+  ARCHITECTURE_ARM = 3;
+  ARCHITECTURE_ARM64 = 4;
+  ARCHITECTURE_PPC = 5;
+  ARCHITECTURE_PPC64 = 6;
+  ARCHITECTURE_PPC64LE = 7;
+  ARCHITECTURE_S390 = 8;
+  ARCHITECTURE_S390X = 9;
+  ARCHITECTURE_MIPS = 10;
+  ARCHITECTURE_MIPS64 = 11;
+  ARCHITECTURE_MIPS64LE = 12;
+  ARCHITECTURE_RISCV64 = 13;
+  ARCHITECTURE_SPARC = 14;
+  ARCHITECTURE_SPARC64 = 15;
+}
+
+// InterfaceType represents network interface types
+enum InterfaceType {
+  INTERFACE_TYPE_UNKNOWN = 0;
+  INTERFACE_TYPE_ETHERNET = 1;
+  INTERFACE_TYPE_WIRELESS = 2;
+  INTERFACE_TYPE_LOOPBACK = 3;
+  INTERFACE_TYPE_VIRTUAL = 4;
+  INTERFACE_TYPE_BRIDGE = 5;
+  INTERFACE_TYPE_VLAN = 6;
+  INTERFACE_TYPE_TUN = 7;
+  INTERFACE_TYPE_TAP = 8;
+  INTERFACE_TYPE_BOND = 9;
+  INTERFACE_TYPE_INFINIBAND = 10;
+}
+
+// BusType represents hardware bus types
+enum BusType {
+  BUS_TYPE_UNKNOWN = 0;
+  BUS_TYPE_PCI = 1;
+  BUS_TYPE_PCIE = 2;
+  BUS_TYPE_USB = 3;
+  BUS_TYPE_SATA = 4;
+  BUS_TYPE_NVME = 5;
+  BUS_TYPE_SAS = 6;
+  BUS_TYPE_IDE = 7;
+  BUS_TYPE_SCSI = 8;
+  BUS_TYPE_VIRTIO = 9;
+}
+
+// DuplexMode represents network interface duplex modes
+enum DuplexMode {
+  DUPLEX_MODE_UNKNOWN = 0;
+  DUPLEX_MODE_HALF = 1;
+  DUPLEX_MODE_FULL = 2;
+}
+
+// OperationalState represents network interface operational states
+enum OperationalState {
+  OPERATIONAL_STATE_UNKNOWN = 0;
+  OPERATIONAL_STATE_UP = 1;
+  OPERATIONAL_STATE_DOWN = 2;
+  OPERATIONAL_STATE_TESTING = 3;
+  OPERATIONAL_STATE_DORMANT = 4;
+  OPERATIONAL_STATE_NOT_PRESENT = 5;
+  OPERATIONAL_STATE_LOWER_LAYER_DOWN = 6;
+}
+
+// ContainmentType represents types of containment relationships
+enum ContainmentType {
+  CONTAINMENT_TYPE_UNKNOWN = 0;
+  CONTAINMENT_TYPE_PHYSICAL = 1;
+  CONTAINMENT_TYPE_LOGICAL = 2;
+  CONTAINMENT_TYPE_PARTITION = 3;
+}
+
+// SystemNode represents the root hardware node for a physical or virtual machine
+message SystemNode {
+  // Hostname of the system
+  string hostname = 1;
+  // Architecture following uname conventions
+  Architecture architecture = 2;
+  // Boot time of the system
+  google.protobuf.Timestamp boot_time = 3;
+  // Kernel version
+  string kernel_version = 4;
+  // Operating system information
+  string os_info = 5;
+}
+
+// CPUPackageNode represents a physical CPU socket/package
+message CPUPackageNode {
+  // Socket ID (physical package ID)
+  int32 socket_id = 1;
+  // Vendor ID (e.g., GenuineIntel, AuthenticAMD)
+  string vendor_id = 2;
+  // Model name (e.g., Intel(R) Xeon(R) CPU E5-2680 v4 @ 2.40GHz)
+  string model_name = 3;
+  // CPU family
+  int32 cpu_family = 4;
+  // Model number
+  int32 model = 5;
+  // Stepping
+  int32 stepping = 6;
+  // Microcode version
+  string microcode = 7;
+  // Cache size
+  string cache_size = 8;
+  // Number of physical cores in this package
+  int32 physical_cores = 9;
+  // Number of logical cores (with hyperthreading)
+  int32 logical_cores = 10;
+}
+
+// CPUCoreNode represents an individual CPU core
+message CPUCoreNode {
+  // Processor ID (logical CPU number)
+  int32 processor_id = 1;
+  // Physical core ID
+  int32 core_id = 2;
+  // Physical package ID this core belongs to
+  int32 physical_id = 3;
+  // Current frequency in MHz
+  double frequency_mhz = 4;
+  // Number of sibling threads
+  int32 siblings = 5;
+}
+
+// NUMANode represents a NUMA memory node
+message NUMANode {
+  // NUMA node ID
+  int32 node_id = 1;
+  // Total memory in bytes for this NUMA node
+  uint64 total_bytes = 2;
+  // CPUs assigned to this NUMA node
+  repeated int32 cpus = 3;
+  // Distance to other NUMA nodes
+  repeated int32 distances = 4;
+}
+
+// MemoryModuleNode represents system memory configuration
+message MemoryModuleNode {
+  // Total system memory in bytes
+  uint64 total_bytes = 1;
+  // Whether NUMA is enabled
+  bool numa_enabled = 2;
+  // Whether NUMA balancing is available
+  bool numa_balancing_available = 3;
+  // Number of NUMA nodes
+  int32 numa_node_count = 4;
+}
+
+// DiskDeviceNode represents a physical storage device
+message DiskDeviceNode {
+  // Device name (e.g., sda, nvme0n1)
+  string device = 1;
+  // Model name
+  string model = 2;
+  // Vendor/manufacturer
+  string vendor = 3;
+  // Size in bytes
+  uint64 size_bytes = 4;
+  // Whether it's a rotational disk (HDD) or not (SSD)
+  bool rotational = 5;
+  // Logical block size
+  uint32 block_size = 6;
+  // Physical block size
+  uint32 physical_block_size = 7;
+  // I/O scheduler
+  string scheduler = 8;
+  // Queue depth
+  uint32 queue_depth = 9;
+}
+
+// DiskPartitionNode represents a disk partition
+message DiskPartitionNode {
+  // Partition name (e.g., sda1, nvme0n1p1)
+  string name = 1;
+  // Parent device name
+  string parent_device = 2;
+  // Size in bytes
+  uint64 size_bytes = 3;
+  // Starting sector
+  uint64 start_sector = 4;
+}
+
+// NetworkInterfaceNode represents a network interface (both physical NICs and virtual interfaces)
+// For physical network cards, the interface field will contain the physical device name
+// Virtual interfaces (VLANs, bridges, etc.) can be related to physical NICs via relationships
+message NetworkInterfaceNode {
+  // Interface name (e.g., eth0, wlan0)
+  string interface = 1;
+  // MAC address
+  string mac_address = 2;
+  // Link speed in Mbps
+  uint64 speed = 3;
+  // Duplex mode
+  DuplexMode duplex = 4;
+  // Maximum transmission unit
+  uint32 mtu = 5;
+  // Driver name
+  string driver = 6;
+  // Interface type
+  InterfaceType type = 7;
+  // IPv4 addresses assigned to this interface
+  repeated string ipv4_addresses = 10;
+  // IPv6 addresses assigned to this interface
+  repeated string ipv6_addresses = 11;
+  // Operational state
+  OperationalState oper_state = 8;
+  // Carrier status
+  bool carrier = 9;
+}
+
+// Hardware relationship predicate types
+
+// Contains represents hierarchical containment relationship
+// Inverse of ContainedBy.
+message Contains {
+  // Type of containment
+  ContainmentType type = 1;
+}
+
+// ContainedBy represents being contained within another component
+// Inverse of Contains.
+message ContainedBy {
+  // Type of containment
+  ContainmentType type = 1;
+}
+
+// NUMAAffinity represents NUMA node affinity
+message NUMAAffinity {
+  // NUMA node ID
+  int32 node_id = 1;
+  // Distance metric (for NUMA distance relationships)
+  int32 distance = 2;
+}
+
+// SocketSharing represents CPU cores sharing a physical socket
+message SocketSharing {
+  // Physical package ID
+  int32 physical_id = 1;
+  // Socket ID
+  int32 socket_id = 2;
+}
+
+// BusConnection represents hardware bus connections
+// Inverse of ConnectedTo.
+message BusConnection {
+  // Bus type
+  BusType bus_type = 1;
+  // Optional bus address
+  string bus_address = 2;
+}
+
+// ConnectedTo represents being connected to a bus
+// Inverse of BusConnection.
+message ConnectedTo {
+  // Bus type
+  BusType bus_type = 1;
+  // Optional bus address
+  string bus_address = 2;
+}
