@@ -145,6 +145,21 @@ message ContainerNode {
 
   // cpuset_mems contains the NUMA memory nodes this container is allowed to use.
   string cpuset_mems = 15;
+
+  // === Human-Readable Identifiers ===
+  // Container-specific human-readable names for simplified operator queries.
+  // Note: Pod-level fields (pod name, namespace, app) are available in Pod resources
+  // and should be accessed via Container→Pod relationships to avoid duplication.
+
+  // container_name is the human-readable container name (e.g., "nginx", "web", "sidecar").
+  // Extracted from io.kubernetes.container.name (K8s) or com.docker.compose.service (Docker).
+  // Falls back to image_name if no explicit container name is available.
+  string container_name = 16;
+
+  // workload_name is the Kubernetes workload name with ReplicaSet hash stripped.
+  // Examples: "web-server-7d4f8-abc" → "web-server", "nginx-deployment-xyz" → "nginx-deployment"
+  // Only populated for Kubernetes containers. For pod name/namespace/app, use Pod resource relationships.
+  string workload_name = 17;
 }
 
 // ProcessNode represents a running process in the runtime topology.
