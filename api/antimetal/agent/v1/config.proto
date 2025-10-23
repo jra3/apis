@@ -32,3 +32,52 @@ message HostStatsCollectionConfig {
   // interval specifies the collection interval in seconds if applicable
   uint32 interval_seconds = 2;
 }
+
+// ProfileCollectionConfig configures eBPF-based CPU profiling.
+// This enables continuous collection of stack traces from running processes
+// using Linux perf events to analyze CPU performance and identify hotspots.
+//
+// Design: Single event per profiler instance for simplicity and clarity.
+// To profile multiple events (e.g., cpu-cycles + cache-misses), create
+// separate ProfileCollectionConfig instances with different names.
+message ProfileCollectionConfig {
+  // event_name specifies which perf event to sample (required).
+  // Only one event per profiler instance - use multiple configs for multiple events.
+  //
+  // Hardware events (require PMU access, bare metal only):
+  //   - "cpu-cycles": Hardware CPU cycles (recommended for bare metal)
+  //   - "instructions": Instructions retired
+  //   - "cache-misses": Last-level cache misses
+  //   - "branch-misses": Branch mispredictions
+  //
+  // Software events (work in VMs and containers):
+  //   - "cpu-clock": Virtual CPU time (recommended for VMs)
+  //   - "task-clock": Task clock time
+  //   - "page-faults": Page fault events
+  //
+  // Event must be available on target system. Hardware events require bare metal
+  // with PMU access; VMs should use software events.
+  string event_name = 1;
+
+  // sample_period specifies how often to capture stack traces.
+  // For hardware events: sample every N cycles (e.g., 1000000 = every 1M cycles)
+  // For software events: sample every N nanoseconds (e.g., 10000000 = every 10ms)
+  //
+  // Default if unset: 1000000 for hardware events, 10000000 for software events
+  uint64 sample_period = 2;
+
+  // interval_seconds specifies how often to aggregate and emit profile data.
+  // Profiles are collected continuously and aggregated over this interval
+  // before being emitted as ProfileStats events.
+  //
+  // Default: 60 seconds
+  uint32 interval_seconds = 3;
+
+  // max_stack_depth limits the depth of captured stack traces.
+  // Range: 1-64, Default: 64
+  //
+  // Lower values reduce memory/CPU overhead but may miss deep call chains.
+  // Most application stacks are < 30 frames deep.
+  // Note: Currently not implemented - reserved for future use.
+  uint32 max_stack_depth = 4;
+}
